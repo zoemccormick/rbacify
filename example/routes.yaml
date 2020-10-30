@@ -1,0 +1,56 @@
+# edge
+- cluster: edge
+  instances:
+    - host: edge
+      port: 8080
+
+# catalog
+- cluster: catalog
+  instances:
+    - host: catalog-proxy
+      port: 8080
+- cluster: catalog-service
+  instances:
+    - host: catalog
+      port: 8080
+
+# dashboard
+- cluster: dashboard
+  instances:
+    - host: dashboard-proxy
+      port: 8080
+- cluster: dashboard-service
+  instances:
+    - host: dashboard
+      port: 1337
+
+# sla
+- cluster: sla
+  instances:
+    - host: sla-proxy
+      port: 8080
+- cluster: sla-service
+  instances:
+    - host: sla
+      port: 1337
+
+# example
+- cluster: example
+  instances:
+    - host: example-proxy
+      port: 8080
+- cluster: example-service
+  instances:
+    - host: example
+      port: 3000
+
+# websoc kserv
+- cluster: websockserv
+  instances:
+    - host: websockserv-proxy
+      port: 8080
+- cluster: websockserv-service
+  instances:
+    - host: websockserv
+      port: 1111
+

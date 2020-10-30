@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-gonic/contrib/static"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
 	"github.com/spf13/viper"
@@ -22,16 +24,41 @@ func main() {
 	viper.AutomaticEnv()
 	setEnv()
 	address := viper.GetString("address")
-	///port := viper.GetString("port")
 	//useTLS := viper.GetBool("rbac_use_tls")
 	//apiuseTLS := viper.GetBool("control_api_use_tls")
 
-	server := http.Server{
-		Addr:    address,
-		Handler: New(&logger),
+	router := gin.Default()
+
+	// Serve frontend static files
+	router.Use(static.Serve("/", static.LocalFile("./views", true)))
+
+	// Setup route group for the API
+	api := router.Group("/api")
+	{
+		api.GET("/", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "pong",
+			})
+		})
 	}
 
-	server.ListenAndServe()
+	api.GET("/rbacState", stateHandler)
+	//api.POST("/jokes/like/:jokeID", LikeJoke)
+
+	// Start and run the server
+	router.Run(address)
+
+	//server := http.Server{
+	//	Addr:    address,
+	//	Handler: New(&logger),
+	//}
+	//
+	//server.ListenAndServe()
+}
+
+func stateHandler(c *gin.Context) {
+	svcState := getState()
+	c.JSON(http.StatusOK, svcState)
 }
 
 func setEnv() {
@@ -48,7 +75,9 @@ func New(logger *zerolog.Logger) http.Handler {
 	// they do not use the RPC functions or the JSON messages
 
 	mux.HandleFunc("/", helloWorld)
-	mux.HandleFunc("/getPolicy", helloWorld)
+	mux.HandleFunc("/getPolicies/{proxy}", getPolicy)
+	//mux.HandleFunc("/getState", getState)
+	//mux.HandleFunc("/getPolicy", getPolicy)
 	mux.HandleFunc("/addPolicy", addPolicy)
 	return mux
 
