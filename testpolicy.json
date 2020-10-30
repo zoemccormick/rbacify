@@ -1,0 +1,6 @@
+{
+    "service_name": "test-service",
+    "policy_name": "0",
+    "permissions": {},
+    "principals": {}
+}
