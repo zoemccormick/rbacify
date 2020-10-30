@@ -41,7 +41,7 @@ func getPolicy(w http.ResponseWriter, r *http.Request) {
 }
 
 // getState returns a list of all current proxies in the API and their RBAC policies
-func getState() []SvcPolicies {
+func getState(w http.ResponseWriter, r *http.Request) {
 	logger.Info().Msgf("Getting state of RBAC")
 
 	req := fmt.Sprintf("http://%s/v1.0/proxy", viper.GetString("gm_control_api_address"))
@@ -59,30 +59,9 @@ func getState() []SvcPolicies {
 	result := (apiresp.Payload).([]interface{})
 	state := getAllSvcPolicies(result)
 
-	return state
-}
+	json.NewEncoder(w).Encode(state)
 
-//func getState(w http.ResponseWriter, r *http.Request) {
-//	logger.Info().Msgf("Getting state of RBAC")
-//
-//	req := fmt.Sprintf("http://%s/v1.0/proxy", viper.GetString("gm_control_api_address"))
-//	resp, err := http.Get(req)
-//	if err != nil {
-//		logger.Error().Msg(err.Error())
-//	}
-//
-//	defer resp.Body.Close()
-//	var apiresp apihttp.Response
-//	err = json.NewDecoder(resp.Body).Decode(&apiresp)
-//	if err != nil {
-//		logger.Error().Msgf("could not decode response body: %s", err.Error())
-//	}
-//	result := (apiresp.Payload).([]interface{})
-//	state := getAllSvcPolicies(result)
-//
-//	json.NewEncoder(w).Encode(state)
-//
-//}
+}
 
 func addPolicy(w http.ResponseWriter, r *http.Request) {
 	logger.Info().Msg("Creating policy to add")
@@ -104,12 +83,6 @@ func addPolicy(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(policy)
 }
-
-//func postPolicy(proxyKey string, rbacPolicy json.RawMessage) {
-//	method := "PUT"
-//	path := "/v1/proxy/" + proxyKey
-//
-//}
 
 func deletePolicy(w http.ResponseWriter, r *http.Request) {
 	logger.Info().Msg("Deleting Existing Policy")
