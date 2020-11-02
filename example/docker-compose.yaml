@@ -1,13 +1,13 @@
 version: '2'
 
 services:
-#  rbacify:
-#    image: zoemccormick/rbacify:latest
-#    ports:
-#      - "8000:8000"
-#    environment:
-#      - ADDRESS=0.0.0.0:8000
-#      - GM_CONTROL_API_ADDRESS=gm-control-api:5555
+  rbacify:
+    image: zoemccormick/rbacify:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - ADDRESS=0.0.0.0:8000
+      - GM_CONTROL_API_ADDRESS=gm-control-api:5555
 
   gm-control-api:
     image: docker.greymatter.io/development/gm-control-api:1.5.0
